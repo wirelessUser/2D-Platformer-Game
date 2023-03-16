@@ -4,19 +4,26 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    float HorizontalInput;
+    private float HorizontalInput;
 
-     Animator playerAnim;
-     Vector3 temp;
-    float verticleInput; 
-     Collider2D playerCollider;
-     Vector2 OriginalCollideSize = new Vector2(0.4f, 2f), OriginalOffset = new Vector2(-0.004f, 0.96f);
-     Vector2 CrouchCollideSize = new Vector2(0.58f, 1.31f), CrouchOffset = new Vector2(-0.004f, 0.6f);//Vector2(-0.004f,0.6f)
-   
+    private Animator playerAnim;
+    private Vector3 temp;
+    private float verticleInput;
+    private Collider2D playerCollider;
+    private Vector2 OriginalCollideSize = new Vector2(0.4f, 2f), OriginalOffset = new Vector2(-0.004f, 0.96f);
+    private Vector2 CrouchCollideSize = new Vector2(0.58f, 1.31f), CrouchOffset = new Vector2(-0.004f, 0.6f);//Vector2(-0.004f,0.6f)
+    public float playerSpeed;
+
+    private Rigidbody2D playerRb;
+
+    public float jumpForce;
+    private float jumpInput;
+    private bool isGrounded=true;
     private void Awake()
     {
         playerAnim = GetComponent<Animator>();
         playerCollider = GetComponent<BoxCollider2D>();// differnce in colider2D vs BoxColider 2D?
+        playerRb = GetComponent<Rigidbody2D>();
     }
     void Start()
     {
@@ -27,20 +34,36 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         // Vertcile Input..................
-        verticleInput = Input.GetAxis(HelperNames.VerticalAxis);
-        PlayerMove();
-      //  Debug.Log(playerSpeed);
+        //verticleInput = Input.GetAxis(HelperNames.VerticalAxis);
+        HorizontalInput = Input.GetAxis(HelperNames.HorizontalAxis);
+        //jumpInput= Input.GetAxis(HelperNames.JUmpAxis);
+        PlayerMoveAnimations();
+        //Debug.Log("isGrounded>>" + isGrounded);
         Crouch();
-        PlayerJump(verticleInput);
+        PlayerJump(isGrounded);
+        PlayerMove(HorizontalInput);
 
-        
+        Jump();
+
+        Debug.Log("playerRb.velocity.y>>" + playerRb.velocity.y);
     }
 
 
-    public void PlayerMove()
+
+   public void PlayerMove(float inputHorizontal)
+    {
+       
+            float playerPos = this.transform.position.x;
+            playerPos+= HorizontalInput * playerSpeed * Time.deltaTime;
+            this.transform.position = new Vector3(playerPos,transform.position.y,transform.position.z);
+            // why it'as not possible>>>>>> float playerPos.x = this.transform.position.x;
+            //this.transform.position.x = playerPos;
+        
+    }
+    public void PlayerMoveAnimations()
     {
 
-        HorizontalInput = Input.GetAxis(HelperNames.HorizontalAxis);
+        
 
         playerAnim.SetFloat("Speed", Mathf.Abs(HorizontalInput));
         // Flip Player Left Right.......
@@ -61,12 +84,13 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    public void PlayerJump(float VerticleSpeed)
+    public void PlayerJump(bool isGrounded)
     {
-        if(VerticleSpeed>0)
-        playerAnim.SetBool("Jump",true);
-        else{
-            playerAnim.SetBool("Jump", false);
+        if(isGrounded==true )
+        playerAnim.SetBool("Jump",false);
+        else if (isGrounded == false)
+        {
+            playerAnim.SetBool("Jump", true);
         }
     }
    
@@ -75,7 +99,7 @@ public class PlayerController : MonoBehaviour
         Vector2 SizeColl = playerCollider.bounds.size;
        Vector2 Offset = playerCollider.bounds.size;
        
-        if (Input.GetKey(KeyCode.LeftControl))  // are all the key enum parameters in unity ??
+        if (Input.GetKeyDown(KeyCode.LeftControl))  // are all the key enum parameters in unity ??
         {
             SizeColl.x = CrouchCollideSize.x;
             SizeColl.y = CrouchCollideSize.y;
@@ -101,17 +125,26 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    public void Run()
+    public void Jump()
     {
-
-        
-    }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (playerRb.velocity.y <= 0&& isGrounded)
+            {
+                playerRb.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
+                isGrounded = false;
+            }
+           
+        }
  
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Enemy")
+        if (collision.gameObject.tag == "Ground")
         {
-            Debug.Log("Name Printing>>");
+            isGrounded = true;
+            Debug.Log("Grounded>>");
         }
     }
 
