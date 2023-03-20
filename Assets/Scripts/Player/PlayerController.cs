@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour
 
     private ScoreUI scorevar;
     private int scoreRaise=5;
+   
     private void Awake()
     {
         scorevar = GameObject.FindGameObjectWithTag("UiController").GetComponent<ScoreUI>();
@@ -124,7 +125,7 @@ public class PlayerController : MonoBehaviour
            // Offset = CrouchOffset;
            // playerCollider.size = SizeColl;
            //playerCollider.offset = Offset;
-            Debug.Log("After_Sie>>" + playerCollider.offset + "After_Offset>>" + playerCollider.offset);
+           // Debug.Log("After_Sie>>" + playerCollider.offset + "After_Offset>>" + playerCollider.offset);
 
             playerAnim.SetBool("Crouch",true);
            // playerAnim.SetTrigger("Crouch0");
@@ -140,7 +141,7 @@ public class PlayerController : MonoBehaviour
             // playerCollider.offset = Offset;
 
 
-            Debug.Log("Before_Sie>>" + playerCollider.size + "Before_Offset>>" + playerCollider.offset);
+            //Debug.Log("Before_Sie>>" + playerCollider.size + "Before_Offset>>" + playerCollider.offset);
            
             
         }
@@ -170,6 +171,8 @@ public class PlayerController : MonoBehaviour
             isGrounded = true;
         
         }
+
+        
     }
 
 
