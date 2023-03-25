@@ -95,9 +95,12 @@ public class SoundManager : MonoBehaviour
 }
 
 
-[Serializable]  //  what is the use of [Serializable] ?  Why we  need this?  and why using [Serializable] the SoundType array Showing Both Elements
-                //  SoundType & soundClip in the inspector panel But without using [Serializable]  it's not Showing them in the inspector Panel?
-                //  Why it is only Applicable for Class , Struct ,Enum only ?
+//  what is the use of [Serializable] ?  Why we  need this?  and why using [Serializable] the SoundType array Showing Both Elements
+//  SoundType & soundClip in the inspector panel But without using [Serializable]  it's not Showing them in the inspector Panel?
+//  Why it is only Applicable for Class , Struct ,Enum only ?
+
+
+[Serializable]             
 public class SoundType
 {
     public Sounds soundType;

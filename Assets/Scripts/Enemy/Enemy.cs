@@ -66,9 +66,33 @@ public class Enemy : MonoBehaviour
 
         RaycastHit2D righttHit = Physics2D.Raycast(right_Collision.position, Vector2.right, 0.2f, playerLayer);
         Collider2D topHit = Physics2D.OverlapCircle(top_Collision.position, 0.2f);
-         
-       
-        
+
+        if (leftHit.collider==null )
+        {
+            // why leftHit==true & lefthit==false not showing errro But 
+            // why lefthit==null OR lefthit!=null ; showing an squiggly line with a warning == "The result of this expression is always false, since the value of type *bool* is never"
+            // equasl to *null* of type bool
+            if (!dead)
+            {
+                if (leftHit.collider.gameObject.GetComponent<PlayerController>())  //  why compare tag is better than gameObject.tag  , i think both are doing string comparision?
+                {
+                    // Apply Dmage
+                    Debug.Log("Dame By LeftHit >>");
+                    myAnim.SetTrigger("Attack");
+
+
+                    playerHealth.Playerdamage(-1);
+                }
+            }
+
+            else
+            {
+                Debug.Log("Right Hit Detected >>" + dead);
+                myBody.velocity = new Vector2(15f, myBody.velocity.y);
+            }
+
+        }
+
 
         if (topHit != null)
         {
@@ -87,31 +111,7 @@ public class Enemy : MonoBehaviour
 
         }
 
-        if (leftHit ==null)
-        {
-            // why leftHit==true & lefthit==false not showing errro But 
-            // why lefthit==null OR lefthit!=null ; showing an squiggly line with a warning == "The result of this expression is always false, since the value of type *bool* is never"
-            // equasl to *null* of type bool
-            if (!dead)
-            {
-                if (leftHit.collider.gameObject.GetComponent<PlayerController>())  //  why compare tag is better than gameObject.tag  , i think both are doing string comparision?
-                {
-                    // Apply Dmage
-                    Debug.Log("Dame By LeftHit >>");
-                    myAnim.SetTrigger("Attack");
-                  
-                  
-                    playerHealth.Playerdamage(-1);
-                }
-            }
-           
-            else
-            {
-                Debug.Log("Right Hit Detected >>" + dead);
-                myBody.velocity = new Vector2(15f, myBody.velocity.y);
-            }
-
-        }
+       
         if (righttHit)
         {
             if (righttHit.collider.gameObject.GetComponent<PlayerController>() && !dead)
